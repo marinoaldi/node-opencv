@@ -77,7 +77,7 @@ using namespace node;
   }
 
 #define DOUBLE_FROM_ARGS(NAME, IND) \
-  if (info[IND]->IsNumberObject()){ \
+  if (info[IND]->IsNumber()){ \
     NAME = info[IND]->NumberValue(); \
   }
 
