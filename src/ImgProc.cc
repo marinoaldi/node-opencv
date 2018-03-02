@@ -13,6 +13,7 @@ void ImgProc::Init(Local<Object> target) {
   Nan::SetMethod(obj, "remap", Remap);
   Nan::SetMethod(obj, "distanceTransform", DistanceTransform);
   Nan::SetMethod(obj, "getStructuringElement", GetStructuringElement);
+  Nan::SetMethod(obj, "getTextSize", GetTextSize);
 
   target->Set(Nan::New("imgproc").ToLocalChecked(), obj);
 }
@@ -232,6 +233,51 @@ NAN_METHOD(ImgProc::GetStructuringElement) {
   } catch (cv::Exception &e) {
     const char *err_msg = e.what();
     JSTHROW(err_msg);
+    return;
+  }
+}
+
+
+
+// cv::getTextSize
+NAN_METHOD(ImgProc::GetTextSize) {
+  Nan::EscapableHandleScope scope;
+
+  try {
+    Nan::Utf8String textString(info[0]);  //FIXME: might cause issues, see here https://github.com/rvagg/nan/pull/152
+    char *text = *textString;//(char *) malloc(textString.length() + 1);
+    //strcpy(text, *textString);
+
+    Nan::Utf8String fontString(info[1]);
+    char *font = *fontString;//(char *) malloc(fontString.length() + 1);
+    //strcpy(font, *fontString);
+    int constFont = cv::FONT_HERSHEY_SIMPLEX;
+
+    if (!strcmp(font, "HERSEY_SIMPLEX")) {constFont = cv::FONT_HERSHEY_SIMPLEX;}
+    else if (!strcmp(font, "HERSEY_PLAIN")) {constFont = cv::FONT_HERSHEY_PLAIN;}
+    else if (!strcmp(font, "HERSEY_DUPLEX")) {constFont = cv::FONT_HERSHEY_DUPLEX;}
+    else if (!strcmp(font, "HERSEY_COMPLEX")) {constFont = cv::FONT_HERSHEY_COMPLEX;}
+    else if (!strcmp(font, "HERSEY_TRIPLEX")) {constFont = cv::FONT_HERSHEY_TRIPLEX;}
+    else if (!strcmp(font, "HERSEY_COMPLEX_SMALL")) {constFont = cv::FONT_HERSHEY_COMPLEX_SMALL;}
+    else if (!strcmp(font, "HERSEY_SCRIPT_SIMPLEX")) {constFont = cv::FONT_HERSHEY_SCRIPT_SIMPLEX;}
+    else if (!strcmp(font, "HERSEY_SCRIPT_COMPLEX")) {constFont = cv::FONT_HERSHEY_SCRIPT_COMPLEX;}
+    else if (!strcmp(font, "HERSEY_SCRIPT_SIMPLEX")) {constFont = cv::FONT_HERSHEY_SCRIPT_SIMPLEX;}
+
+    double scale = info.Length() < 6 ? 1 : info[2]->NumberValue();
+    double thickness = info.Length() < 7 ? 1 : info[3]->NumberValue();
+    int baseline = 0; // TODO MALCAIDE por parametro
+
+    // void putText(Mat& img, const string& text, Point org, int fontFace, double fontScale, Scalar color, int thickness=1, int lineType=8, bool bottomLeftOrigin=false )
+    // cv::putText(self->mat, text, cv::Point(x, y), constFont, scale, color, thickness);
+
+    //Size getTextSize(const string& text, int fontFace, double fontScale, int thickness, int* baseLine);
+    cv::Size size = cv::getTextSize(text, constFont, scale, thickness, &baseLine);
+
+    // Return the output image
+    info.GetReturnValue().Set(size);
+  } catch (cv::Exception &e) {
+    const char *err_msg = e.what();
+    Nan::ThrowError(err_msg);
     return;
   }
 }
