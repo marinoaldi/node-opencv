@@ -271,7 +271,7 @@ NAN_METHOD(ImgProc::GetTextSize) {
     // cv::putText(self->mat, text, cv::Point(x, y), constFont, scale, color, thickness);
 
     //Size getTextSize(const string& text, int fontFace, double fontScale, int thickness, int* baseLine);
-    cv::Size size = cv::getTextSize(text, constFont, scale, thickness, &baseLine);
+    cv::Size size = cv::getTextSize(text, constFont, scale, thickness, &baseline);
 
     v8::Local < v8::Array > arr = Nan::New<Array>(2);
     arr->Set(0, Nan::New<Number>(size.height));
