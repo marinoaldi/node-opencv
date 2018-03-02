@@ -273,8 +273,12 @@ NAN_METHOD(ImgProc::GetTextSize) {
     //Size getTextSize(const string& text, int fontFace, double fontScale, int thickness, int* baseLine);
     cv::Size size = cv::getTextSize(text, constFont, scale, thickness, &baseLine);
 
-    // Return the output image
-    info.GetReturnValue().Set(size);
+    v8::Local < v8::Array > arr = Nan::New<Array>(2);
+    arr->Set(0, Nan::New<Number>(size.height));
+    arr->Set(1, Nan::New<Number>(size.width));
+
+    // Return the image text size
+    info.GetReturnValue().Set(arr);
   } catch (cv::Exception &e) {
     const char *err_msg = e.what();
     Nan::ThrowError(err_msg);
