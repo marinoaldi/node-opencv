@@ -2838,7 +2838,7 @@ NAN_METHOD(Matrix::PutText) {
 
   //cv::putText(self->mat, text, cv::Point(x, y), constFont, scale, color, thickness);
 
-  cv::Font font = cv::fontQt(''Times'');
+  cv::QtFont font = cv::fontQt(''Times'');
   cv::addText(self->mat, text, cv::Point(x, y), font);
 
   return;
