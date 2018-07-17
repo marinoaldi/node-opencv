@@ -2836,7 +2836,10 @@ NAN_METHOD(Matrix::PutText) {
   double scale = info.Length() < 6 ? 1 : info[5]->NumberValue();
   double thickness = info.Length() < 7 ? 1 : info[6]->NumberValue();
 
-  cv::putText(self->mat, text, cv::Point(x, y), constFont, scale, color, thickness);
+  //cv::putText(self->mat, text, cv::Point(x, y), constFont, scale, color, thickness);
+
+  cv::font font = cv::fontQt(''Times'');
+  cv::addText(self->mat, text, cv::Point(x, y), font);
 
   return;
 }
